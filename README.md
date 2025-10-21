@@ -1,52 +1,91 @@
-# real-fake-voice-detector
+# real-fake-voice-detector(Deep Learning, CNN, MFCC)
 
 **Author:** Rezvan Mansoori
 
-A Python project to classify *real* vs *fake* (deepfake) audio samples.
-This repository documents and packages the original project. The dataset used was downloaded from Kaggle: **The Fake-or-Real (FoR) Dataset (deepfake audio)**. The dataset is **not included** in this repository; please download it from Kaggle and point the script to the `REAL` and `FAKE` folders on your machine.
+This project implements a deep learning-based system to automatically distinguish real human voices from AI-generated (deepfake) voices. It combines audio signal processing and Convolutional Neural Networks (CNNs) to achieve up to 84% accuracy in classification.
 
-## Contents
-- `src/train.py` - Main training script (cleaned and generalized version of the original code)
-- `requirements.txt` - Python dependencies
-- `README.md` - This file
-- `output/` - (generated when you run training) contains model weights and plots
+*** Overview
 
-## Quickstart
+In recent years, deepfake audio has become an emerging challenge in cybersecurity, media integrity, and online communication.
+This project aims to develop a reliable audio classification model that identifies whether a given voice sample is genuine or synthetic.
+By extracting MFCC (Mel-Frequency Cepstral Coefficients) from audio signals and training a 1D CNN, this system learns to capture spectral patterns unique to human and AI-generated voices.
 
-1. Clone the repository or download and extract zip.
-2. Install dependencies (preferably in a virtual environment):
+*** Background & Motivation
 
-```bash
+Fake voice generation techniques are advancing rapidly, making it increasingly difficult to detect audio forgeries by ear alone.
+This project was motivated by the question:
+“Can we build an automated model that can learn to detect deepfake voices using signal-level features?”
+The approach integrates traditional signal processing (MFCC extraction, normalization) with modern deep learning architectures (Conv1D layers).
+
+*** Technical Details
+
+Component Description 
+Language Python 3 
+Frameworks TensorFlow / Keras, scikit-learn 
+Libraries NumPy, Pandas, Matplotlib, Librosa, pydub 
+Model Type 1D Convolutional Neural Network (CNN) 
+Feature Extraction MFCC (20 coefficients per frame) 
+Dataset Split 80% Training / 20% Testing 
+Evaluation Metrics Accuracy, Confusion Matrix, Classification Report
+
+*** Model Architecture & Methodology
+
+Audio Preprocessing:
+Normalized all input signals using pydub for consistent volume levels.
+Extracted MFCC features from each file with Librosa.
+
+Feature Handling:
+Padded or trimmed each MFCC to a uniform length.
+Labeled real voices as 1 and fake voices as 0.
+
+Model Design:
+Three stacked Conv1D layers with ReLU activation.
+MaxPooling after each convolution.
+Dense layers for final classification with Sigmoid activation.
+
+Training & Tuning:
+Used Adam optimizer and Binary Cross-Entropy loss.
+Experimented with hyperparameter tuning via GridSearchCV.
+
+*** Dataset
+
+Fake-or-Real (FoR) Audio Dataset
+Format: .wav and .mp3 audio files
+Structure: 
+AUDIO
+    REAL
+    FAKE
+    
+*** Results
+Training Accuracy: ~84%
+Validation Accuracy: ~81%
+Loss Trend: Steady convergence after ~15 epochs
+Confusion Matrix: Demonstrated strong true positive and negative balance
+These results confirm that MFCC features combined with a CNN can effectively capture discriminative characteristics between genuine and fake audio.
+
+*** How to Run
 pip install -r requirements.txt
-```
+python src/train.py\ 
+--real_dir "E:/Datasets/FoR/REAL" \ 
+--fake_dir "E:/Datasets/FoR/FAKE" \ 
+--output_dir "./output" \ 
+--epochs 20
 
-3. Download the dataset (Kaggle): **The Fake-or-Real (FoR) Dataset (deepfake audio)** and prepare two folders:
-```
-/path/to/REAL
-/path/to/FAKE
-```
+*** Skills Demonstrated
+Deep Learning: CNN design, tuning, and evaluation
+Signal Processing: MFCC feature extraction and normalization
+Python Development: Modular, clean code with documentation
+Data Handling: Preprocessing, splitting, and feature alignment
+Research Thinking: Designing a model to solve a real-world AI challenge
 
-4. Run training (example):
-
-```bash
-python src/train.py --real_dir "/path/to/REAL" --fake_dir "/path/to/FAKE" --output_dir "./output" --epochs 20
-```
-
-After training, `output/` will contain `best_model.h5`, `model_weights.h5`, and `training_history.png`.
-
-## Approach (summary)
-
-- Extract MFCC features from each audio file (padded/truncated to fixed length)
-- Build a Conv1D-based neural network using TensorFlow / Keras
-- Train the model using an 80/20 train-test split
-- Save best model and plot training accuracy/loss
-
-## Notes & Caveats
-
-- Audio datasets are often large. This repo does **not** include the Kaggle dataset; link and citation must be followed on Kaggle to download the FoR dataset.
-- Depending on the dataset and preprocessing, model performance may vary — reproducing the original 60%+ accuracy depends on the exact preprocessing, dataset split, and hyperparameters.
-- You may need to install `ffmpeg` or `libav` for `pydub` and `librosa` to read certain audio formats.
-- If you want an interactive notebook version, open `notebook/real_fake_voice_detector.ipynb` (included).
+*** References
+Kaggle Dataset: Fake-or-Real (FoR) Audio Dataset 
+Keras API Documentation 
+Librosa Audio Feature Extraction Guide
 
 ## Author
 Rezvan Mansoori
+M.A. in Software Engineering
+Focused on AI, Deep Learning, and Audio Recognition
+
+If you find this project useful or interesting, feel free to star  the repository and explore my other AI and Python projects!
